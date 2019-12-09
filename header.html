@@ -1,0 +1,52 @@
+
+<div id="header_app">
+	<div class="head">
+		<div class="flexRowAround pdtb15 whiteBj"><img class="T-Logo" src="images/logo.png" ></div>
+		<div class="orderNavTwo flexRowBetween pubBj white">
+			<div class="tt" :class="currentUrl=='/index.html'?'on':''"><a href="index.html">福茶</a></div>
+			<div class="tt" :class="currentUrl=='/quality.html'?'on':''"><a href="quality.html">福茶品质</a></div>
+			<div class="tt" :class="currentUrl=='/strategy.html'?'on':''"><a href="strategy.html">赚钱攻略</a></div>
+			<div class="tt" :class="currentUrl=='/login.html'?'on':''"><a href="login.html">个人中心</a></div>
+			<div class="tt" :class="currentUrl=='/aboutUs.html'?'on':''"><a href="aboutUs.html">关于我们</a></div>
+		</div>
+	</div>
+	<div class="headH"></div>
+</div>
+
+<script type="text/javascript">
+
+	var header_app = new Vue({
+	    el: '#header_app',
+	    data:function(){
+	        return {
+	        	is_toggle:false,
+				shownav:true,
+				currentUrl:''
+	        }
+	    },
+	    created:function () {
+	        var self = this;
+			var currentUrl = window.base.GetUrlRelativePath();
+			var reg = /\/([^\/]+)\.html/i;
+			if(reg.exec(currentUrl)&&reg.exec(currentUrl)[0]){
+				self.currentUrl = reg.exec(currentUrl)[0];
+			}else{
+				self.currentUrl = '/index.html';
+			};
+			console.log('self.currentUrl',self.currentUrl)
+	    },
+	    methods: {
+	    }
+	});
+</script>
+
+<style>
+	.T-Logo{width: 145px; height: 28px; display: block;}
+	.head{position: fixed;top: 0;left: 0;right: 0;z-index: 20;}
+	.orderNavTwo .tt{ width: 20%; text-align: center; line-height:40px;box-sizing: border-box;}
+	.orderNavTwo .tt a{display: block;line-height: 40px;color: #fff;}
+	.orderNavTwo .tt.on{ color: #fff; position: relative;}
+	.orderNavTwo .tt.on::after{content: ""; width: 30px; height: 3px;background: #fff; position: absolute; bottom: 0;left: 50%;transform: translateX(-50%);}
+	.headH{height: 98PX;width: 100%;}
+</style>
+
