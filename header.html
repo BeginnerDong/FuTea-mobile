@@ -6,7 +6,9 @@
 			<div class="tt" :class="currentUrl=='/index.html'?'on':''"><a href="index.html">福茶</a></div>
 			<div class="tt" :class="currentUrl=='/quality.html'?'on':''"><a href="quality.html">福茶品质</a></div>
 			<div class="tt" :class="currentUrl=='/strategy.html'?'on':''"><a href="strategy.html">赚钱攻略</a></div>
-			<div class="tt" :class="currentUrl=='/login.html'?'on':''"><a href="login.html">个人中心</a></div>
+			<div class="tt" :class="currentUrl=='/login.html'||currentUrl=='/center.html'?'on':''">
+				<a @click="checkLogin()">个人中心</a>
+			</div>
 			<div class="tt" :class="currentUrl=='/aboutUs.html'?'on':''"><a href="aboutUs.html">关于我们</a></div>
 		</div>
 	</div>
@@ -36,6 +38,15 @@
 			console.log('self.currentUrl',self.currentUrl)
 	    },
 	    methods: {
+			
+			checkLogin(){
+				const self = this;
+				if (localStorage.getItem('isTure')) {
+					window.location.href = 'center.html'
+				}else{
+					window.location.href = 'login.html'
+				}
+			},
 	    }
 	});
 </script>

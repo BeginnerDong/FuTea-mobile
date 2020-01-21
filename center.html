@@ -27,8 +27,8 @@
 		<div class="pdlr4 whiteBj">
 			<div class="ind_Tbanner pdtb15 oh pr">
 				<ul class="swiper-wrapper">
-					<li class="swiper-slide" v-for="(item,index) in swipeBanner" :key="index"> 
-						<img :src="item" alt="" /> 
+					<li class="swiper-slide" v-for="(item,index) in bannerData" :key="index"> 
+						<img :src="item.url" alt="" /> 
 					</li>
 				</ul>
 				<div id="bannerFooter" class="pa oh btnav" ></div>
@@ -43,81 +43,88 @@
 		</div>
 		<div class="mglr4 pdt20 pdb40">
 			<div class="inforOne fs13" v-show="curr==1">
-				<p class="item flex">姓名：战歌</p>
-				<p class="item flex">手机号：15623235658</p>
-				<p class="item flex">微信号：566265654as</p>
-				<p class="item flex">密码：fc12345678</p>
-				<p class="item flex">支付宝号：15235454540</p>
-				<p class="item flex">姓名：战歌</p>
-				<p class="item flex">所在城市：陕西省西安市</p>
-				<p class="item flex">会员等级：黄金会员</p>
-				<p class="item flex">加入时间：2019年10月20日</p>
-				<p class="item flex">邀请码：456225a</p>
-				<p class="item flex">邀请链接：https://www.zcool.com.cn/</p>
+				
+				<p class="item flex">姓名：{{mainData.info?mainData.info.name:''}}</p>
+				<p class="item flex">手机号：{{mainData.info?mainData.info.phone:''}}</p>
+				<p class="item flex">微信号：{{mainData.info?mainData.info.wechat:''}}</p>
+				<p class="item flex">密码：{{mainData.password}}</p>
+				<p class="item flex">支付宝号：{{mainData.info?mainData.info.zfb:''}}</p>
+				
+				<p class="item flex">所在城市：{{mainData.info?mainData.info.address:''}}</p>
+				<p class="item flex" v-if="mainData.info&&mainData.info.level==1">会员等级：普通会员</p>
+				<p class="item flex" v-if="mainData.info&&mainData.info.level==2">会员等级：白银会员</p>
+				<p class="item flex" v-if="mainData.info&&mainData.info.level==3">会员等级：黄金会员</p>
+				<p class="item flex" v-if="mainData.info&&mainData.info.level==4">会员等级：钻石会员</p>
+				<p class="item flex" v-if="mainData.info&&mainData.info.level==5">会员等级：皇冠会员</p>
+				<p class="item flex">加入时间：{{mainData.info?mainData.info.create_time:''}}</p>
+				<p class="item flex">邀请码：{{mainData.info?mainData.info.code:''}}</p>
+				<p class="item flex">邀请链接：http://106.12.155.217/fuTea/mobile/login.html?code={{mainData.info?mainData.info.code:''}}</p>
 			</div>
-			<div class="inforOne inforTwo fs13"  v-show="curr==2">
+			
+			<div class="inforOne inforTwo" v-show="curr==2">
 				<p class="item flex">
 					<span>收货人姓名：</span>
-					<span class="input"><input :disabled="disabled" type="text" name="" value="战歌" /></span>
+					<span class="input"><input v-model="submitData.name" :disabled="disabled" type="text" name="" value="战歌" /></span>
 				</p>
 				<p class="item flex">
 					<span>收货人手机号：</span>
-					<span class="input"><input :disabled="disabled" type="text" name="" value="15623235652" /></span>
+					<span class="input"><input v-model="submitData.phone" :disabled="disabled" type="text" name="" value="15623235652" /></span>
 				</p>
 				<p class="item flex">
 					<span>收货人地址：</span>
-					<span class="input"><input :disabled="disabled" type="text" name="" value="陕西省西安市雁塔区高新大都荟" /></span>
+					<span class="input"><input v-model="submitData.address" :disabled="disabled" type="text" name="" value="陕西省西安市雁塔区高新大都荟" /></span>
 				</p>
-				<div class="submitbtn mgt40">
+				<div class="submitbtn pdt30">
 					<button class="btn" type="button" v-show="disabled" @click="editBtn">编辑</button>
-					<button class="btn" type="button" v-show="!disabled" @click="editBtn">保存</button>
+					<button class="btn" type="button" v-show="!disabled" @click="userInfoUpdate">保存</button>
 				</div>
 			</div>
-			
 			<!-- 已购买套餐 -->
 			<div class="inforThree fs1"  v-show="curr==3">
 				<div class="table fs13 center boxShaow">
 					<div class="item th flexRowBetween fs13" style="background: #F2F2F2;">
 						<span>种类</span>
 						<span>斤数</span>
-						<span>价格</span>
+						<!-- <span>价格</span> -->
 					</div>
-					<div class="item flexRowBetween" v-for="(item,index) in tableDate" :key="index">
-						<span>{{item.title}}</span>
-						<span>{{item.specs}}</span>
-						<span>{{item.price}}</span>
+					<div class="item flexRowBetween" v-for="(item,index) in product" :key="index">
+						<span>{{item.name}}</span>
+						<span>{{item.count}}斤</span>
+						<!-- <span>{{item.price}}</span> -->
 					</div>
 					<div class="item flexRowBetween">
 						<span></span>
 						<span></span>
-						<span class="red">总计：{{allPrice}}</span>
+						<span class="red">总计：{{mainData.order&&mainData.order[0]?mainData.order[0].price:''}}</span>
 					</div>
 				</div>
 			</div>
 			
+			
 			<!-- 我的收益 -->
 			<div class="inforFour"  v-show="curr==4">
+				
 				<div class="moneySpace fs13 flexRowAround center">
 					<div class="item">
 						<div class="one">
 							<p class="tit">今日收益(元)</p>
-							<span class="mny ftw">252</span>
+							<span class="mny ftw">{{mainData.compute?mainData.compute.today:''}}</span>
 						</div>
 					</div>
 					<div class="item">
 						<div class="two">
 							<p class="tit">本月收益(元)</p>
-							<span class="mny ftw">252</span>
+							<span class="mny ftw">{{mainData.compute?mainData.compute.month:''}}</span>
 						</div>
 					</div>
 					<div class="item">
 						<div class="three">
 							<p class="tit">总收益(元)</p>
-							<span class="mny ftw">252</span>
+							<span class="mny ftw">{{mainData.compute?mainData.compute.all:''}}</span>
 						</div>
 					</div>
 				</div>
-				<h1 class="center fs14 pdtb15">一级会员总和<span class="mgl10 allNum">562</span></h1>
+				<h1 class="center fs14 pdtb15">一级会员总和<span class="mgl10 allNum">{{userInfoData.son?userInfoData.son.all:''}}</span></h1>
 				<div class="table fs13 center mgb20">
 					<div class="item th flexRowBetween fs13">
 						<span>会员级别</span>
@@ -125,15 +132,40 @@
 						<span>本月</span>
 						<span>总数</span>
 					</div>
-					<div class="item flexRowBetween" v-for="(item,index) in classADate" :key="index">
-						<span>{{item.title}}</span>
-						<span>{{item.sameDay}}</span>
-						<span>{{item.thisMonth}}</span>
-						<span>{{item.num}}</span>
+					
+					<div class="item flexRowBetween">
+						<span>皇冠</span>
+						<span>{{userInfoData.son?userInfoData.son.today5:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.month5:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.all5:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>钻石</span>
+						<span>{{userInfoData.son?userInfoData.son.today4:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.month4:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.all4:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>黄金</span>
+						<span>{{userInfoData.son?userInfoData.son.today3:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.month3:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.all3:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>白银</span>
+						<span>{{userInfoData.son?userInfoData.son.today2:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.month2:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.all2:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>普通</span>
+						<span>{{userInfoData.son?userInfoData.son.today1:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.month1:''}}</span>
+						<span>{{userInfoData.son?userInfoData.son.all1:''}}</span>
 					</div>
 				</div>
 				
-				<h1 class="center fs14 pdtb15">二级会员总和<span class="mgl10 allNum">562</span></h1>
+				<h1 class="center fs14 pdtb15">二级会员总和<span class="mgl10 allNum">{{userInfoData.grandson?userInfoData.grandson.all:''}}</span></h1>
 				<div class="table fs13 center mgb20">
 					<div class="item th flexRowBetween fs13">
 						<span>会员级别</span>
@@ -141,11 +173,36 @@
 						<span>本月</span>
 						<span>总数</span>
 					</div>
-					<div class="item flexRowBetween" v-for="(item,index) in classADate" :key="index">
-						<span>{{item.title}}</span>
-						<span>{{item.sameDay}}</span>
-						<span>{{item.thisMonth}}</span>
-						<span>{{item.num}}</span>
+				
+					<div class="item flexRowBetween">
+						<span>皇冠</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.today5:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.month5:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.all5:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>钻石</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.today4:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.month4:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.all4:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>黄金</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.today3:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.month3:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.all3:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>白银</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.today2:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.month2:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.all2:''}}</span>
+					</div>
+					<div class="item flexRowBetween">
+						<span>普通</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.today1:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.month1:''}}</span>
+						<span>{{userInfoData.grandson?userInfoData.grandson.all1:''}}</span>
 					</div>
 				</div>
 			</div>
@@ -158,77 +215,523 @@
 	</div>
 </body>
 
-	
-	<script type="text/javascript">
-		$(function(){
-			var banner = new Swiper('.ind_Tbanner', {
-				 speed:400,
-				 autoplay:2500,
-				 autoplayDisableOnInteraction:false,
-				 loop:true,
-				 pagination: '.ind_Tbanner .btnav',
-				 onInit:function(){},
-				 paginationClickable: true
-			});
+<script type="text/javascript">
+	$(function(){
+		var banner = new Swiper('.ind_Tbanner', {
+			 speed:400,
+			 autoplay:2500,
+			 autoplayDisableOnInteraction:false,
+			 loop:true,
+			 pagination: '.ind_Tbanner .btnav',
+			 onInit:function(){},
+			 paginationClickable: true
 		});
+	});
 		var app = new Vue({
-		    el: '#app',
-		    data:function(){
-		        return {
-		        	banner_index:0,
-					is_show:false,
-					wx_show:2,
+			el: '#app',
+			data: function() {
+				return {
+					banner_index: 0,
+					is_show: false,
+					wx_show: 2,
 					mainData: [],
 					labelData: [],
-					swipeBanner:[
+					swipeBanner: [
 						"images/banner.png",
 						"images/banner.png",
 						"images/banner.png"
 					],
-					首页轮播:[],
-					curr:1,
-					disabled:true,
-					tableDate:[
-						{title:'金骏眉',specs:'3斤',price:'125523元'},
-						{title:'金骏眉',specs:'3斤',price:'125523元'}
-					],
-					allPrice:"13726元",
-					classADate:[
-						{title:'皇冠',sameDay:'6',thisMonth:'25',num:'31'},
-						{title:'钻石',sameDay:'5',thisMonth:'36',num:'41'},
-						{title:'黄金',sameDay:'8',thisMonth:'12',num:'20'},
-						{title:'白银',sameDay:'5',thisMonth:'8',num:'13'}
-					],
-		        }
-		    },
-		    methods: {
-				changeCurr(curr){
-					const self = this;
-					if(curr!=self.curr){
-						self.curr = curr
-					}
-				},
-				editBtn(){
-					const self = this;
-					self.disabled = !self.disabled
-				},
-				getMainData: function(id){
+					首页轮播: [],
+					curr: 1,
+					disabled: true,
+					
+					mainData: {},
+					submitData: {
+						name: '',
+						phone: '',
+						address: ''
+					},
+					userInfoData:{},
+					product:[],
+					bannerData:{}
+				}
+			},
+
+			created: function() {
+				var self = this;
+				self.getSliderData();
+				self.getMainData();
+				self.getUserInfoData()
+			},
+
+			methods: {
+				
+				getSliderData: function(id){
 				    var self = this;
+					const postData = {
+						thirdapp_id:2,
+						searchItem:{
+							title:'手机端轮播图'
+						}
+					};
 				    var callback = function(res){
 				        console.log('getMainData', res);
-				        self.mainData.push.apply(self.mainData,res.info.data);
-				        for (var i = 0; i < self.mainData.length; i++) {
-				        	self[self.mainData[i].title] = self.mainData[i];
-				        };
-				        self.getNewsData()
+				        self.bannerData= res.info.data[0].mainImg;
+				        
 				    };
 					console.log('self.mainData',self.mainData)
 				    window.base.labelGet(postData, callback);
-				}
+				},
 				
-		    }
+				changeCurr(curr) {
+					const self = this;
+					if (curr != self.curr) {
+						self.curr = curr
+					}
+				},
+
+				editBtn() {
+					const self = this;
+					self.disabled = !self.disabled
+				},
+				
+				getUserInfoData() {
+					var self = this;
+					var data = new Date(); //本月
+					data.setDate(1);
+					data.setHours(0);
+					data.setSeconds(0);
+					data.setMinutes(0);
+					var monthStart = parseInt(data.getTime() / 1000);
+					var dayStart = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000;
+					var nowTime = Date.parse(new Date()) / 1000;
+					var postData = {
+						token: localStorage.getItem('user_token'),
+						searchItem:{
+							user_no:localStorage.getItem('user_no')
+						}
+					};
+					postData.getAfter = {
+						son: {
+							tableName: 'UserInfo',
+							searchItem: {
+								status: 1
+							},
+							middleKey: 'user_no',
+							key: 'parent',
+							condition: 'in',
+							compute: {
+								all: [
+									'count',
+									'count',
+									{
+										status: 1,
+									}
+								],
+								today5: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 5
+									}
+								],
+								month5: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 5
+									}
+								],
+								all5: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 5
+									}
+								],
+								today4: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 4
+									}
+								],
+								month4: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 4
+									}
+								],
+								all4: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 4
+									}
+								],
+								today3: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 3
+									}
+								],
+								month3: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 3
+									}
+								],
+								all3: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 3
+									}
+								],
+								today2: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 2
+									}
+								],
+								month2: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 2
+									}
+								],
+								all2: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 2
+									}
+								],
+								today1: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 1
+									}
+								],
+								month1: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level:1
+									}
+								],
+								all1: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 1
+									}
+								]
+							},
+					
+						},
+						grandson: {
+							tableName: 'UserInfo',
+							searchItem: {
+								status: 1
+							},
+							middleKey: 'user_no',
+							key: 'grandparent',
+							condition: 'in',
+							compute: {
+								all: [
+									'count',
+									'count',
+									{
+										status: 1,
+									}
+								],
+								today5: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 5
+									}
+								],
+								month5: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 5
+									}
+								],
+								all5: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 5
+									}
+								],
+								today4: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 4
+									}
+								],
+								month4: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 4
+									}
+								],
+								all4: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 4
+									}
+								],
+								today3: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 3
+									}
+								],
+								month3: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 3
+									}
+								],
+								all3: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 3
+									}
+								],
+								today2: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 2
+									}
+								],
+								month2: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level: 2
+									}
+								],
+								all2: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 2
+									}
+								],
+								today1: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										level: 1
+									}
+								],
+								month1: [
+									'count',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										level:1
+									}
+								],
+								all1: [
+									'count',
+									'count',
+									{
+										status: 1,
+										level: 1
+									}
+								]
+							},
+					
+						},
+					};
+					var callback = function(res) {
+						if (res.solely_code == 100000) {
+							self.userInfoData = res.info.data[0]
+						}
+					};
+					window.base.userInfoGet(postData, callback);
+				},
+
+				getMainData: function(id) {
+					var self = this;
+					var data = new Date(); //本月
+					data.setDate(1);
+					data.setHours(0);
+					data.setSeconds(0);
+					data.setMinutes(0);
+					var monthStart = parseInt(data.getTime() / 1000);
+					var dayStart = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000;
+					var nowTime = Date.parse(new Date()) / 1000;
+					var postData = {
+						token: localStorage.getItem('user_token'),
+					};
+					postData.getAfter = {
+						order: {
+							tableName: 'Order',
+							middleKey: 'user_no',
+							key: 'user_no',
+							searchItem: {
+								status: 1
+							},
+							condition: '=',
+
+						},
+						compute: {
+							tableName: 'FlowLog',
+							searchItem: {
+								create_time: ['between', [dayStart, nowTime]],
+								status: 1,
+								type: 2,
+								user_no: localStorage.getItem('user_no'),
+							},
+							middleKey: 'user_no',
+							key: 'user_no',
+							condition: 'in',
+							compute: {
+								today: [
+									'sum',
+									'count',
+									{
+										create_time: ['between', [dayStart, nowTime]],
+										status: 1,
+										type: 2,
+										user_no: localStorage.getItem('user_no'),
+										count: ['>', 0]
+									}
+								],
+								month: [
+									'sum',
+									'count',
+									{
+										create_time: ['between', [monthStart, nowTime]],
+										status: 1,
+										type: 2,
+										user_no: localStorage.getItem('user_no'),
+										count: ['>', 0]
+									}
+								],
+								all: [
+									'sum',
+									'count',
+									{
+
+										status: 1,
+										type: 2,
+										user_no: localStorage.getItem('user_no'),
+										count: ['>', 0]
+									}
+								]
+							},
+						},
+					};
+					var callback = function(res) {
+						if (res.solely_code == 100000) {
+							self.mainData = res.info.data[0];
+							self.product = self.mainData.order[0].snap_product;
+							self.submitData.name = self.mainData.info.name;
+							self.submitData.phone = self.mainData.info.phone;
+							self.submitData.address = self.mainData.info.address;
+						}
+					};
+					console.log('self.submitData', self.submitData)
+					window.base.userGet(postData, callback);
+				},
+
+
+				userInfoUpdate() {
+					const self = this;
+					console.log(111)
+					const postData = {
+						token: localStorage.getItem('user_token'),
+						data: window.base.cloneForm(self.submitData)
+					};
+
+					var newObject = window.base.cloneForm(self.submitData);
+
+					if (window.base.checkComplete(newObject)) {
+						const callback = (res) => {
+							if (res.solely_code == 100000) {
+								self.disabled = !self.disabled
+							} else {
+								alert(res.msg)
+							}
+						}
+						window.base.userInfoUpdate(postData, callback);
+					} else {
+						alert('请补全信息', 'none')
+					};
+				},
+			}
 		});
 	</script>
+	
 	
 	<style>
 		.moneySpace .item .mny{border-radius: 50%;color: #fff;font-weight: bold;display: flex;justify-content: center; align-items: center;margin:10px auto ;}

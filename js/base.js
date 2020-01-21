@@ -1,5 +1,5 @@
 window.base = {
-	g_restUrl: 'http://www.xianaxty.com/api/public/index.php/api/v1/',
+	g_restUrl: 'http://106.12.155.217/tea/public/index.php/api/v1/',
 
 	thirdapp_id:2,
 	test:666,
@@ -72,6 +72,30 @@ window.base = {
 			onBridgeReady(param);
 		}
 
+	},
+	
+	codeGet(param, callback) {
+		var allParams = {
+			url: 'Project/Solely/getCode',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		this.getData(allParams)
+	},
+	
+	thirdappGet:function(param, callback) {
+		var allParams = {
+			url: 'Base/ThirdApp/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		this.getData(allParams);
 	},
 
 	directPay: function(param, callback) {
@@ -209,17 +233,10 @@ window.base = {
 					var loca = window.location;
 					window.location.href = loca.origin + loca.pathname;
 				} else if (res.solely_code == 200000) {
-					console.log(that.GetUrlRelativePath().substr(1, 2));
-					if (that.GetUrlRelativePath().substr(1, 2) == 'wx') {
-
-						localStorage.removeItem('merchant_token');
-						localStorage.removeItem('merchant_no');
-						window.location.href = './wxBusinessLogin.html'
-					} else {
-						localStorage.removeItem('user_token');
-						localStorage.removeItem('user_no');
-						that.getUserToken();
-					};
+					/* localStorage.removeItem('user_token');
+					localStorage.removeItem('user_no');
+					localStorage.removeItem('user_info');
+					window.location.href = './login.html' */
 				} else {
 					params.sCallback && params.sCallback(res);
 				};
@@ -799,7 +816,7 @@ window.base = {
 	login: function(param, callback) {
 
 		var allParams = {
-			url: 'Func/Common/loginByUp',
+			url: 'Project/Solely/login',
 			type: 'post',
 			data: param,
 			sCallback: function(data) {

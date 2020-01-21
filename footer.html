@@ -1,10 +1,10 @@
 
-<div class="footer fs12">
+<div class="footer fs12" id="footer_app">
 	<div class="footcont">
 		<div class="oneList pdlr4 flexRowBetween">
 			<div class="item L">
-				<div class="tit">微信号17320191041</div>
-				<img class="ewm" src="images/package-img.jpg" >
+				<div class="tit">微信号:{{footerData.description}}</div>
+				<img class="ewm" :src="footerData.mainImg&&footerData.mainImg[0]?footerData.mainImg[0].url:''" >
 			</div>
 			<div class="item M">
 				<div class="tit">股东背景</div>
@@ -14,9 +14,10 @@
 			</div>
 			<div class="item R">
 				<div class="tit">网站链接</div>
-				<a class="p">首页&gt;</a>
-				<a class="p">福茶品质&gt;</a>
-				<a class="p">个人中心&gt;</a>
+				<a class="p" href="index.html">首页&gt;</a>
+				<a class="p" href="quality.html">福茶品质&gt;</a>
+				<a class="p" href="strategy.html">赚钱攻略&gt;</a>
+				<a class="p" href="aboutUs.html">关于我们&gt;</a>
 			</div>
 		</div>
 		<div class="pdtb15 mglr4">合作伙伴</div>
@@ -35,6 +36,49 @@
 		<p>北京市-朝阳区-建国门外大街一号</p>
 	</div>
 </div>
+
+<script type="text/javascript">
+		var app = new Vue({
+		    el: '#footer_app',
+		    data:function(){
+		        return {
+		        	banner_index:0,
+					is_show:false,
+					wx_show:2,
+					footerData: {},
+					labelData: [],
+					
+					首页轮播:[]
+		        }
+		    },
+			
+			created: function() {
+				var self = this;
+				self.getMainData();
+			},
+			
+		    methods: {
+				
+				getMainData(){
+				    var self = this;
+					const postData = {
+						searchItem:{
+							thirdapp_id:2,
+							title:'联系方式'
+						}
+					};
+				    var callback = function(res){
+						if(res.info.data.length>0){
+							 self.footerData = res.info.data[0];
+						}
+				    };
+					console.log('self.mainData',self.mainData)
+				    window.base.labelGet(postData, callback);
+				},
+				
+		    }
+		});
+	</script>
 
 <style type="text/css">
 	
